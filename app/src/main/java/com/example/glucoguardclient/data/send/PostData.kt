@@ -1,4 +1,4 @@
-package com.example.glucoguardclient.data
+package com.example.glucoguardclient.data.send
 
 data class PostData(
     val pregnancies: Int,

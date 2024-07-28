@@ -39,8 +39,3 @@ fun Header(text:String){
 
 
 
-@Preview(showBackground = true)
-@Composable
-fun HeaderPreview(){
-    CustomTextField(label = "Weight", value = "", onValueChange = {} , hint = 138 )
-}

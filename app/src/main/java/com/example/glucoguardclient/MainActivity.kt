@@ -11,6 +11,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.glucoguardclient.ui.auth.login.LoginScreen
+import com.example.glucoguardclient.ui.auth.login.LoginViewModel
+import com.example.glucoguardclient.ui.auth.register.RegisterViewModel
+import com.example.glucoguardclient.ui.auth.register.SignUpScreen
+import com.example.glucoguardclient.ui.home.HomeScreen
 import com.example.glucoguardclient.ui.theme.GlucoGuardClientTheme
 
 class MainActivity : ComponentActivity() {
@@ -20,20 +31,61 @@ class MainActivity : ComponentActivity() {
         setContent {
             GlucoGuardClientTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                    MyApp(Modifier.padding(innerPadding))
                 }
             }
         }
     }
 }
 
+
+
+
+
+
+
+
+
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
+fun MyApp(modifier: Modifier = Modifier) {
+    val navController = rememberNavController()
+
+    NavHost(navController = navController, startDestination = "register") {
+        composable("register") {
+            val viewModel: RegisterViewModel = RegisterViewModel()
+            SignUpScreen(
+                viewModel = viewModel,
+                onNavigateToLogin = {
+                    navController.navigate("login") {
+                        popUpTo("register") { inclusive = true }
+                    }
+                }
+            )
+        }
+        composable("login") {
+            val viewModel: LoginViewModel = LoginViewModel()
+            LoginScreen(
+                viewModel = viewModel,
+                onNavigateToSignup = { token!! ->
+                    navController.navigate("home/$token") {
+                        popUpTo("login") { inclusive = true }
+                    }
+                }
+            )
+        }
+        composable(
+            "home/{token}",
+            arguments = listOf(navArgument("token") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val token = backStackEntry.arguments?.getString("token") ?: ""
+            HomeScreen(token = token)
+        }
+        // Add other destinations as needed
+    }
 }
+
+//todo fix the LoginResponse class and LoginViewModel
+
+
+
+
