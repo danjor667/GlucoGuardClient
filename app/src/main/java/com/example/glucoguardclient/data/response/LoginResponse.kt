@@ -1,4 +1,6 @@
 package com.example.glucoguardclient.data.response
 
-class LoginResponse {
-}
+data class LoginResponse(
+    val email: String,
+    val token: String
+)

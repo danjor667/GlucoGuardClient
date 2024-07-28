@@ -1,4 +1,6 @@
 package com.example.glucoguardclient.data.response
 
-class PredictionResponse {
-}
+data class PredictionResponse(
+    val prediction: List<Int>,
+    val probability: List<Double>
+)

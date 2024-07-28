@@ -42,32 +42,36 @@ class LoginViewModel: ViewModel() {
 
                 val response = apiService.loginUser(userLogin)
                 if (response.isSuccessful) {
-                    response.body()?.let { body ->
-                        val token = body as String //["token"] as? String //todo correct it
-                        if (token != null) {
-                            _authToken = token  // Store the token in the ViewModel
-                            _uiState.update {
-                                it.copy(
-                                    authenticationSucceed = true,
-                                )
-                            }
-                            navigateToHome()
-                        } else {
-                            _uiState.update {
-                                it.copy(authErrorMessage = "Invalid server response: missing token")
-                            }
+                    val loginResponse = response.body()
+                    if (loginResponse != null && loginResponse.token != null) {
+                        _authToken = loginResponse.token
+                        _uiState.update {
+                            it.copy(
+                                isAuthenticating = false,
+                                authenticationSucceed = true
+                            )
+
+                        }
+                        navigateToHome(loginResponse.token)
+                    }
+                    else {
+                        _uiState.update {
+                            it.copy(authErrorMessage = "Invalid server response: missing token")
                         }
                     }
-                } else {
+                }
+                else {
                     _uiState.update {
                         it.copy(authErrorMessage = "Login failed: ${response.message()}")
                     }
                 }
-            } catch (e: Exception) {
+            }
+            catch (e: Exception) {
                 _uiState.update {
                     it.copy(authErrorMessage = "Network error: ${e.localizedMessage}")
                 }
-            } finally {
+            }
+            finally {
                 _uiState.update { it.copy(isAuthenticating = false) }
             }
         }
@@ -83,8 +87,8 @@ class LoginViewModel: ViewModel() {
 
     }
 
-    fun navigateToHome(){
-        _navigationEvent.value = NavigationEvent.NavigateToLogin
+    fun navigateToHome(token: String){
+        _navigationEvent.value = NavigationEvent.NavigateToHome(token)
 
     }
 

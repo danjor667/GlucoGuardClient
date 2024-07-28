@@ -1,14 +1,17 @@
 package com.example.glucoguardclient
 
+import android.health.connect.datatypes.units.Percentage
+
 
 sealed class NavigationEvent {
     object NavigateToLogin : NavigationEvent()
-    object NavigateToHome : NavigationEvent()
     object NavigateToSignUp : NavigationEvent()
-    object NavigateToProfile : NavigationEvent()
-    object NavigateToSettings : NavigationEvent()
-    data class NavigateToDetails(val itemId: String) : NavigationEvent()
-    object NavigateBack : NavigationEvent()
+    data class NavigateToHome(val token: String) : NavigationEvent()
+    data class NavigateToPredictScreen(val token: String): NavigationEvent()
+    data class NavigateToPredictionResult(
+        val prediction: Int,
+        val negPercentage: Double,
+        val posPercentage: Double
+    ) : NavigationEvent()
 
-    // Add more navigation events as needed
 }

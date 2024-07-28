@@ -84,4 +84,6 @@ dependencies {
     // Optional: If you need to use viewModels() in Compose
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
 
+    implementation("androidx.compose.foundation:foundation:1.6.8")
+
 }

@@ -42,7 +42,8 @@ import com.example.glucoguardclient.ui.composable.CustomTextField
 fun LoginScreen(
     modifier: Modifier = Modifier,
     viewModel: LoginViewModel,
-    onNavigateToSignup: () -> Unit
+    onNavigateToSignup: () -> Unit,
+    onNavigateToHome: (String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val navigationEvent by viewModel.navigationEvent.collectAsState()
@@ -52,6 +53,11 @@ fun LoginScreen(
         when (navigationEvent) {
             is NavigationEvent.NavigateToSignUp -> {
                 onNavigateToSignup()
+                viewModel.onNavigationHandled()
+            }
+            is NavigationEvent.NavigateToHome -> {
+                val token = (navigationEvent as NavigationEvent.NavigateToHome).token
+                onNavigateToHome(token)
                 viewModel.onNavigationHandled()
             }
             else -> { }
@@ -166,6 +172,7 @@ fun showPage(){
 
     LoginScreen(
         viewModel = LoginViewModel(),
-        onNavigateToSignup = { /*TODO*/ }
+        onNavigateToSignup = { /*TODO*/ },
+        onNavigateToHome = { }
     )
 }

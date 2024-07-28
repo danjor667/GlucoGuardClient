@@ -1,4 +1,5 @@
 package com.example.glucoguardclient.data.response
 
-class RegisterResponse {
-}
+data class RegisterResponse(
+    val email: String
+)
