@@ -16,10 +16,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -62,6 +64,14 @@ fun LoginScreen(
             }
             else -> { }
         }
+    }
+
+    if(uiState.authErrorMessage != null){
+        DangerAlert(
+            message = uiState.authErrorMessage.toString(),
+            onDismiss = { viewModel.dismissErrorDialog() }
+        )
+
     }
 
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -164,6 +174,38 @@ fun GoToSignup(
         )
     }
 }
+
+
+@Composable
+fun DangerAlert(
+    message: String,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = "Login Failed",
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.titleSmall
+            )
+        },
+        text = {
+            Text(
+                text = message,
+                style = MaterialTheme.typography.titleSmall
+            )
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text("OK", color = MaterialTheme.colorScheme.error)
+            }
+        },
+
+    )
+}
+
+
 
 
 @Preview

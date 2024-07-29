@@ -1,7 +1,9 @@
 package com.example.glucoguardclient.data.send
 
+import com.google.gson.annotations.SerializedName
+
 
 data class LogInUser(
-    val email: String,
-    val password: String
+    @SerializedName("email") val email: String,
+    @SerializedName("password") val password: String
 )

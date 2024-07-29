@@ -1,5 +1,6 @@
 package com.example.glucoguardclient.ui.auth.register
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.glucoguardclient.NavigationEvent
@@ -40,6 +41,7 @@ class RegisterViewModel : ViewModel() {
                     _uiState.update {
                         it.copy(authErrorMessage = "Registration failed: ${response.message()}")
                     }
+                    Log.v("msg", "error occured on register")
                 }
             } catch (e: Exception) {
                 _uiState.update {
@@ -76,6 +78,10 @@ class RegisterViewModel : ViewModel() {
 
     fun updatePassword(password: String) {
         _uiState.update { it.copy(password = password) }
+    }
+
+    fun dismissErrorDialog(){
+        _uiState.update { it.copy(authErrorMessage = null) }
     }
 
 

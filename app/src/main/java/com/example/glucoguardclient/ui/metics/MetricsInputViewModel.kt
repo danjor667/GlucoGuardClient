@@ -1,11 +1,14 @@
 package com.example.glucoguardclient.ui.metics
 
+import android.renderscript.ScriptIntrinsicYuvToRGB
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.glucoguardclient.data.send.PostData
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.glucoguardclient.NavigationEvent
 import com.example.glucoguardclient.network.api.RetrofitClient
 import kotlinx.coroutines.flow.update
@@ -19,6 +22,7 @@ class MetricsInputViewModel(private val token: String): ViewModel() {
     private val _navigationEvent = MutableStateFlow<NavigationEvent?>(null)
     val navigationEvent: StateFlow<NavigationEvent?> = _navigationEvent.asStateFlow()
 
+
     private val apiService = RetrofitClient.apiService
 
 
@@ -28,27 +32,24 @@ class MetricsInputViewModel(private val token: String): ViewModel() {
         viewModelScope.launch{
             try{
                 val data = PostData(
-                    pregnancies = uiState.value.pregnancies,
-                    Glucose = uiState.value.Glucose,
-                    BloodPressure = uiState.value.BloodPressure,
-                    SkinThickness = uiState.value.SkinThickness,
-                    Insulin = uiState.value.Insulin,
-                    BMI = uiState.value.BMI,
-                    DiabetesPedigreeFunction = uiState.value.DiabetesPedigreeFunction,
-                    Age = uiState.value.Age
+                    pregnancies = uiState.value.pregnancies.toInt(),
+                    Glucose = uiState.value.Glucose.toDouble(),
+                    BloodPressure = uiState.value.BloodPressure.toDouble(),
+                    SkinThickness = uiState.value.SkinThickness.toDouble(),
+                    Insulin = uiState.value.Insulin.toDouble(),
+                    BMI = uiState.value.BMI.toDouble(),
+                    DiabetesPedigreeFunction = uiState.value.DiabetesPedigreeFunction.toDouble(),
+                    Age = uiState.value.Age.toInt()
                 )
                 _uiState.update { it.copy(predicting = true) }
 
-                val response = apiService.getPrediction(data=data, token=token)
+                val response = apiService.getPrediction(postData = data, token="Token ${token}")
                 if(response.isSuccessful){
+                    _uiState.update { it.copy(predicting = false) }
                     val prediction = response.body()!!.prediction[0]
                     val negPercentage = response.body()!!.probability[0]
-                    val posPercentage = response.body()!!.probability[1]
-                    navigateToResultScreen(
-                        prediction,
-                        negPercentage,
-                        posPercentage
-                    )
+                    val posPercentage = response.body()!!.probability[1].toFloat()
+                    _navigationEvent.value = NavigationEvent.NavigateToPredictionResult(posPercentage)
 
                 }else{
                    _uiState.update { it.copy(errorMessage = "sorry an error occurred") }
@@ -62,54 +63,60 @@ class MetricsInputViewModel(private val token: String): ViewModel() {
     }
 
 
-    fun updatePregnancies(value: Int){
+    fun updatePregnancies(value: String){
         _uiState.update { it.copy(pregnancies = value) }
     }
 
-    fun updateGlucose(value: Double){
+    fun updateGlucose(value: String){
         _uiState.update { it.copy(Glucose = value) }
 
     }
 
-    fun updateAge(value: Int){
+    fun updateAge(value: String){
         _uiState.update { it.copy(Age = value) }
 
     }
 
-    fun updateBMI(value: Double){
+    fun updateBMI(value: String){
         _uiState.update { it.copy(BMI = value) }
 
     }
 
-    fun updateDiabetesPedigreeFunction(value: Double){
+    fun updateDiabetesPedigreeFunction(value: String){
         _uiState.update { it.copy(DiabetesPedigreeFunction = value) }
 
     }
 
-    fun updateSkinThickness(value: Double){
+    fun updateSkinThickness(value: String){
         _uiState.update { it.copy(SkinThickness = value) }
 
     }
 
-    fun updateBloodPressure(value: Double){
+    fun updateBloodPressure(value: String){
         _uiState.update { it.copy(BloodPressure = value) }
 
     }
 
 
-    fun updateInsulin(value: Double){
+    fun updateInsulin(value: String){
         _uiState.update { it.copy(Insulin = value) }
 
     }
 
+    fun dismissErrorDialog(){
+        _uiState.update { it.copy(errorMessage = null) }
+    }
 
-    fun navigateToResultScreen(prediction: Int, negPercentage: Double, posPercentage: Double){
+
+    fun navigateToResultScreen(posPercentage: Float){
         _navigationEvent.value = NavigationEvent.NavigateToPredictionResult(
-            prediction,
-            negPercentage,
             posPercentage
         )
 
+    }
+
+    fun onNavigationHandled(){
+        //todod
     }
 
 
@@ -117,14 +124,14 @@ class MetricsInputViewModel(private val token: String): ViewModel() {
 
 
 data class PredictScreenState(
-    val pregnancies: Int = 0,
-    val Glucose: Double = 0.0,
-    val BloodPressure: Double = 0.0,
-    val SkinThickness: Double = 0.0,
-    val Insulin: Double = 0.0,
-    val BMI: Double = 0.0,
-    val DiabetesPedigreeFunction: Double = 0.0,
-    val Age: Int = 0,
+    val pregnancies: String = "",
+    val Glucose: String = "",
+    val BloodPressure: String = "",
+    val SkinThickness: String = "",
+    val Insulin: String = "",
+    val BMI: String = "",
+    val DiabetesPedigreeFunction: String = "",
+    val Age: String = "",
     val predicting: Boolean = false,
     val resultReceived: Boolean = false,
     val errorMessage: String? = null

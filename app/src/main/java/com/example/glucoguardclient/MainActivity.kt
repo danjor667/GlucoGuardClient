@@ -31,16 +31,23 @@ import com.example.glucoguardclient.ui.auth.register.RegisterViewModel
 import com.example.glucoguardclient.ui.auth.register.SignUpScreen
 import com.example.glucoguardclient.ui.home.HomeScreen
 import com.example.glucoguardclient.ui.home.HomeViewModel
+import com.example.glucoguardclient.ui.home.HomeViewModelFactory
+import com.example.glucoguardclient.ui.metics.MetricInput
+import com.example.glucoguardclient.ui.metics.MetricsInputScreen
+import com.example.glucoguardclient.ui.metics.MetricsInputViewModel
+import com.example.glucoguardclient.ui.metics.ViewModelFactory
+import com.example.glucoguardclient.ui.metics.result.ResultScreen
 import com.example.glucoguardclient.ui.theme.GlucoGuardClientTheme
 
 class MainActivity : ComponentActivity() {
+    @ExperimentalMaterial3Api
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             GlucoGuardClientTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                   // MyApp(Modifier.padding(innerPadding))
+                   MyApp(Modifier.padding(innerPadding))
                 }
             }
         }
@@ -130,9 +137,11 @@ fun MyApp(modifier: Modifier = Modifier) {
                 },
                 onNavigateToHome = { token ->
                     navController.navigate("home/$token") {
-                        popUpTo("login") { inclusive = true }
+                        popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                        launchSingleTop = true
                     }
                 }
+
             )
         }
 
@@ -142,30 +151,55 @@ fun MyApp(modifier: Modifier = Modifier) {
             arguments = listOf(navArgument("token") { type = NavType.StringType })
         ) { backStackEntry ->
             val token = backStackEntry.arguments?.getString("token") ?: ""
-            val viewModel: HomeViewModel = viewModel()
+            val viewModel: HomeViewModel = viewModel(
+                factory = HomeViewModelFactory(token)
+            )
 
             HomeScreen(
                 activities,
                 viewModel,
+                onNavigateToPredict = { token ->
+                    navController.navigate("inputMetrics/$token"){
+                        popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                }
             )
         }
 
         composable(
-            "inputMetrics/{token}"
-        ){
+            "inputMetrics/{token}",
+            arguments = listOf(navArgument("token") { type = NavType.StringType })
+        ){ backStackEntry ->
+            val token = backStackEntry.arguments?.getString("token") ?: ""
+            val viewModel: MetricsInputViewModel = viewModel(
+                factory = ViewModelFactory(token)
+            )
+
+            MetricsInputScreen(
+                viewModel,
+                onNavigateToPredictionScreen = {posPercentage ->
+                    navController.navigate("predictionResult/$posPercentage"){
+                        popUpTo(navController.graph.startDestinationId) { inclusive= true}
+                        launchSingleTop = true
+                    }
+                }
+            )
 
         }
 
         composable(
-            "predictionResult/{token}"
-        ){
+            "predictionResult/{posPercentage}",
+          arguments = listOf(navArgument("posPercentage" ) { type = NavType.StringType})
+        ){   backStackEntry ->
+            val posPercentage = backStackEntry.arguments?.getString("posPercentage") ?: ""
+            ResultScreen(posPercentage = posPercentage.toFloat() )
 
         }
 
     }
 }
 
-//todo fix the LoginResponse class and LoginViewModel
 
 
 

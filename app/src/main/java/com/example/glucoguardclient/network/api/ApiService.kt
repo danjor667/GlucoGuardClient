@@ -16,17 +16,17 @@ import retrofit2.http.POST
 interface ApiService {
 
     //login
-    @POST("/login")
+    @POST("/login/")
     suspend fun loginUser(@Body logInUser: LogInUser): Response<LoginResponse>
 
     //register
-    @POST("/register")
+    @POST("/register/")
     suspend fun register(
         @Body user: User,
     ): Response<RegisterResponse>
 
     //get prediction
-    @POST("/predict")
-    suspend fun getPrediction(@Body data: PostData, @Header("x-auth-token") token: String): Response<PredictionResponse>
+    @POST("/predict/")
+    suspend fun getPrediction(@Header("Authorization") token: String, @Body postData: PostData): Response<PredictionResponse>
 
 }

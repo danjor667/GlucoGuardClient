@@ -1,5 +1,6 @@
 package com.example.glucoguardclient.ui.home
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
@@ -37,20 +38,43 @@ import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.glucoguardclient.NavigationEvent
 
 @ExperimentalMaterial3Api
 @Composable
 fun HomeScreen(
     activities: List<ActivityItem>,
-    viewModel: HomeViewModel
+    viewModel: HomeViewModel,
+    onNavigateToPredict: (String) -> Unit
 ) {
+
+    val uiState by viewModel.uiState.collectAsState()
+    val navigationEvent by viewModel.navigationEvent.collectAsState()
+
+    LaunchedEffect(navigationEvent) {
+        when (navigationEvent) {
+            is NavigationEvent.NavigateToPredictScreen -> {
+                val token = (navigationEvent as NavigationEvent.NavigateToPredictScreen).token
+                onNavigateToPredict(token)
+                viewModel.onNavigationHandled()
+            } else -> { }
+        }
+    }
+
     val backgroundColor = if (isSystemInDarkTheme()) {
         MaterialTheme.colorScheme.background
     } else {
         MaterialTheme.colorScheme.surface
     }
     val textColor = Color.White
+
+    BackHandler(enabled = true) {
+        // Do nothing, prevent navigation backward
+    }
 
     Column(
         modifier = Modifier
@@ -69,7 +93,7 @@ fun HomeScreen(
             }
         }
         Button(
-            onClick = { viewModel.onNavigateToPredict() },
+            onClick = { viewModel.navigateToPredict() },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
@@ -186,6 +210,6 @@ fun ShowPage(){
         )
     )
 
-    HomeScreen(activities = activities, viewModel = HomeViewModel(""))
+    HomeScreen(activities = activities, viewModel = HomeViewModel(""), {})
 
 }

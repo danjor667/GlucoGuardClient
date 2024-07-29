@@ -1,5 +1,6 @@
 package com.example.glucoguardclient.ui.auth.login
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -41,6 +42,7 @@ class LoginViewModel: ViewModel() {
                 )
 
                 val response = apiService.loginUser(userLogin)
+
                 if (response.isSuccessful) {
                     val loginResponse = response.body()
                     if (loginResponse != null && loginResponse.token != null) {
@@ -56,8 +58,9 @@ class LoginViewModel: ViewModel() {
                     }
                     else {
                         _uiState.update {
-                            it.copy(authErrorMessage = "Invalid server response: missing token")
+                            it.copy(authErrorMessage = "Invalid email or/and password")
                         }
+
                     }
                 }
                 else {
@@ -73,6 +76,7 @@ class LoginViewModel: ViewModel() {
             }
             finally {
                 _uiState.update { it.copy(isAuthenticating = false) }
+
             }
         }
     }
@@ -98,6 +102,11 @@ class LoginViewModel: ViewModel() {
 
     fun onNavigationHandled() {
         _navigationEvent.value = null
+    }
+
+
+    fun dismissErrorDialog(){
+        _uiState.update { it.copy(authErrorMessage = null) }
     }
 
 }

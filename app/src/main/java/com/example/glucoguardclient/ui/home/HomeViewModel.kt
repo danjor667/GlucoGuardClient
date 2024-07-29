@@ -22,9 +22,13 @@ class HomeViewModel(private val token: String): ViewModel() {
 
 
 
-    fun onNavigateToPredict(){
+    fun navigateToPredict(){
         _navigationEvent.value = NavigationEvent.NavigateToPredictScreen(token)
 
+    }
+
+    fun onNavigationHandled() {
+        _navigationEvent.value = null
     }
 
 }

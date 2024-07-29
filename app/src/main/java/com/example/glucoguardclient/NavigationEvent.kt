@@ -9,9 +9,7 @@ sealed class NavigationEvent {
     data class NavigateToHome(val token: String) : NavigationEvent()
     data class NavigateToPredictScreen(val token: String): NavigationEvent()
     data class NavigateToPredictionResult(
-        val prediction: Int,
-        val negPercentage: Double,
-        val posPercentage: Double
+        val posPercentage: Float
     ) : NavigationEvent()
 
 }

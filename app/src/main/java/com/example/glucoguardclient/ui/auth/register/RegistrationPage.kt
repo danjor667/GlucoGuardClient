@@ -37,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.glucoguardclient.NavigationEvent
 import com.example.glucoguardclient.R
+import com.example.glucoguardclient.ui.auth.login.DangerAlert
 import com.example.glucoguardclient.ui.composable.CustomTextField
 
 
@@ -59,6 +60,14 @@ fun SignUpScreen(
             }
             else -> { }
         }
+    }
+
+
+    if(uiState.authErrorMessage != null){
+        DangerAlert(
+            message = uiState.authErrorMessage.toString(),
+            onDismiss = { viewModel.dismissErrorDialog() }
+        )
     }
 
 
