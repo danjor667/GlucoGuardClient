@@ -51,6 +51,7 @@ class MetricsInputViewModel(private val token: String): ViewModel() {
                     val posPercentage = response.body()!!.probability[1].toFloat()
                     _navigationEvent.value = NavigationEvent.NavigateToPredictionResult(posPercentage)
 
+
                 }else{
                    _uiState.update { it.copy(errorMessage = "sorry an error occurred") }
                 }
@@ -116,7 +117,7 @@ class MetricsInputViewModel(private val token: String): ViewModel() {
     }
 
     fun onNavigationHandled(){
-        //todod
+        _navigationEvent.value = null
     }
 
 

@@ -87,26 +87,28 @@ fun MyApp(modifier: Modifier = Modifier) {
             color = Color(0xFFBFFCC6)
         ),
         ActivityItem(
-            title = "Average Blood Sugar",
-            value = "107",
+            title = "Average Calories",
+            value = "10",
             unit = "mg/dL",
             icon = Icons.Filled.Home,
             color = Color(0xFFBFFCC6)
         ),
         ActivityItem(
-            title = "Average Blood Sugar",
-            value = "107",
-            unit = "mg/dL",
-            icon = Icons.Filled.Home,
-            color = Color(0xFFBFFCC6)
+            title = "Average sleep Time",
+            value = "58",
+            unit = "minutes",
+            icon = Icons.Filled.ThumbUp,
+            color = Color(0xFFBAE1FF)
         ),
+
         ActivityItem(
-            title = "Average Blood Sugar",
-            value = "107",
-            unit = "mg/dL",
-            icon = Icons.Filled.Home,
-            color = Color(0xFFBFFCC6)
+            title = "Running Distance",
+            value = "7.25",
+            unit = "km",
+            icon = Icons.Filled.Face,
+            color = Color(0xFFFFB3BA)
         )
+
     )
 
 
@@ -179,10 +181,11 @@ fun MyApp(modifier: Modifier = Modifier) {
             MetricsInputScreen(
                 viewModel,
                 onNavigateToPredictionScreen = {posPercentage ->
-                    navController.navigate("predictionResult/$posPercentage"){
-                        popUpTo(navController.graph.startDestinationId) { inclusive= true}
-                        launchSingleTop = true
-                    }
+                    navController.navigate("predictionResult/$posPercentage")
+//                    {
+//                        popUpTo(navController.graph.startDestinationId) { inclusive= true}
+//                        launchSingleTop = true
+//                    }
                 }
             )
 
