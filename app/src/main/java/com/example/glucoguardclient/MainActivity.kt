@@ -107,6 +107,27 @@ fun MyApp(modifier: Modifier = Modifier) {
             unit = "km",
             icon = Icons.Filled.Face,
             color = Color(0xFFFFB3BA)
+        ),
+        ActivityItem(
+            title = "Average Calories",
+            value = "10",
+            unit = "mg/dL",
+            icon = Icons.Filled.Home,
+            color = Color(0xFFBFFCC6)
+        ),
+        ActivityItem(
+            title = "Average Calories",
+            value = "10",
+            unit = "mg/dL",
+            icon = Icons.Filled.Home,
+            color = Color(0xFFBFFCC6)
+        ),
+        ActivityItem(
+            title = "Average Calories",
+            value = "10",
+            unit = "mg/dL",
+            icon = Icons.Filled.Home,
+            color = Color(0xFFBFFCC6)
         )
 
     )

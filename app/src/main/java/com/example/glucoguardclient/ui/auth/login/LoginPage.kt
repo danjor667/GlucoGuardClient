@@ -185,7 +185,7 @@ fun DangerAlert(
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = "Login Failed",
+                text = "Failed Action",
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.titleSmall
             )
